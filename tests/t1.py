@@ -20,7 +20,7 @@ class Song:
         currentdir = os.curdir
         try:
             
-            os.stat(directory)
+            os.stat('temp')
             print("temp already exists.")
         except:
             print("Creating temporary directory in ", currentdir)
@@ -31,15 +31,15 @@ class Song:
                  self.path_to_file.rfind('/')
                 :self.path_to_file.find('.')]+".wav"
         print("new_path_to_file ", new_path_to_file) 
-        command = 'mpg123 -vC '+self.path_to_file+' '+ new_path_to_file 
+        command = 'mpg123 -0w '+new_path_to_file + ' ' + self.path_to_file
         print(command)
         result = os.system(command)
         print("The RESULT is: ",result)
         if result != 0:
             raise NameError('ErrorParsingMPG123_to_system')
         
-        self.info =wf.read(new_path_to_file)
-
+        _ , self.info =wf.read(new_path_to_file)
+        self.counter = 0 + self.offset*1
     # ITERATION obj
     def __iter__(self):
         return self
@@ -52,7 +52,13 @@ class Song:
     def readSeries(self):	# return frames
         if self.info is None:
             self.initFile()
-        return  self.info.readSeries(interval)    
+        if  self.counter> len(self.info):
+            raise StopIteration
+        c = self.counter
+        self.counter +=self.interval
+        if self.counter > len(self.info):
+            return self.info[c:]
+        return  self.info[c:self.counter]   
 
 
 example = "/home/juancki/Music-genre-checker/tests/SoundHelix-Song.mp3"
