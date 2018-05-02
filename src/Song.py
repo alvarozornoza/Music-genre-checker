@@ -1,3 +1,4 @@
+
 import os
 import scipy.io.wavfile as wf
 from scipy import signal
@@ -60,10 +61,3 @@ class Song:
             return self.info[c:]
         return  self.info[c:self.counter]   
 
-
-example = "/home/juancki/Music-genre-checker/tests/SoundHelix-Song.mp3"
-print("example at: ",example)
-
-s  = Song(example)
-#a = [b for b in s]
-print('lenght ',len(a))
