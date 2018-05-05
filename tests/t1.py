@@ -1,7 +1,7 @@
 import os
 import scipy.io.wavfile as wf
 from scipy import signal
-
+import matplotlib.pyplot as plt
 
 class Song:
     # Container for songs, it converts files to .wav and it also iterates and
@@ -32,7 +32,13 @@ class Song:
                  self.path_to_file.rfind('/')
                 :self.path_to_file.find('.')]+".wav"
         print("new_path_to_file ", new_path_to_file) 
-        command = 'mpg123 -0w '+new_path_to_file + ' ' + self.path_to_file
+        # Command formating
+        comamnd = ''
+        fmt = self.path_to_file[self.path_to_file.rfind('.'):]
+        if fmt == '.au':
+            command = 'sox '+self.path_to_file+ ' -e signed-integer '+new_path_to_file
+        elif fmt == '.mp3' :
+            command = 'mpg123 -0w '+new_path_to_file + ' ' + self.path_to_file
         print(command)
         result = os.system(command)
         print("The RESULT is: ",result)
@@ -66,4 +72,4 @@ print("example at: ",example)
 
 s  = Song(example)
 #a = [b for b in s]
-print('lenght ',len(a))
+#print('lenght ',len(a))

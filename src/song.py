@@ -1,4 +1,7 @@
+#/usr/bin/python3.6
 
+# song.py
+# @juancki
 import os
 import scipy.io.wavfile as wf
 from scipy import signal
@@ -11,10 +14,11 @@ class Song:
     
     # TODO offset
 
-    def __init__(self,path_to_file,offset=0,interval=44100*10):
+    def __init__(self,path_to_file,offset=0,seconds=3):
         self.path_to_file = path_to_file
         self.offset = offset 
-        self.interval = interval 
+        self.seconds = seconds
+        self.interval = seconds
         self.info = None # actually is a Wave_read Object
 
     def initFile(self):
@@ -33,14 +37,24 @@ class Song:
                  self.path_to_file.rfind('/')
                 :self.path_to_file.find('.')]+".wav"
         print("new_path_to_file ", new_path_to_file) 
-        command = 'mpg123 -0w '+new_path_to_file + ' ' + self.path_to_file
+        # Command formating
+        comamnd = ''
+        fmt = path_to_file[path_to_file.rfind('.'):]
+        if fmt == '.au':
+            command = 'sox '+self.path_to_file+ ' -e signed-integer '+new_path_to_file
+        elif fmt == '.mp3' :
+            command = 'mpg123 -0w '+new_path_to_file + ' ' + self.path_to_file
         print(command)
         result = os.system(command)
         print("The RESULT is: ",result)
         if result != 0:
             raise NameError('ErrorParsingMPG123_to_system')
         self.fs , self.info =wf.read(new_path_to_file)
+        self.interval = self.fs*self.seconds 
         self.counter = 0 + self.offset*1
+        self.new_path_to_file = new_path_to_file
+
+
     # ITERATION obj
     def __iter__(self):
         return self
@@ -60,4 +74,7 @@ class Song:
         if self.counter > len(self.info):
             return self.info[c:]
         return  self.info[c:self.counter]   
+    
+    def deleteTmp():
+
 
