@@ -88,7 +88,7 @@ if "test" in args.mode:
 	print("The predicted probabilities are :", prediction)
 
 	# Compute confusion matrix
-	cnf_matrix = confusion_matrix(test_y, prediction)
+	cnf_matrix = confusion_matrix(test_y, labels)
 	np.set_printoptions(precision=2)
 
 	# Plot non-normalized confusion matrix
