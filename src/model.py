@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+import os
 
 import tflearn
 from tflearn.layers.conv import conv_2d, max_pool_2d
