@@ -34,8 +34,10 @@ if "slice" in args.mode:
 	sys.exit()
 
 #List genres
-genres = os.listdir(slicesPath)
-genres = [filename for filename in genres if os.path.isdir(slicesPath+filename)]
+#genres = os.listdir(slicesPath)
+genres = ['country', 'disco', 'reggae', 'rock', 'pop', 'classical', 'blues', 'hiphop', 'metal', 'jazz']
+
+#genres = [filename for filename in genres if os.path.isdir(slicesPath+filename)]
 nbClasses = len(genres)
 
 #Create model 
