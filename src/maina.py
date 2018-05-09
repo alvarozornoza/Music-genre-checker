@@ -60,7 +60,7 @@ if "train" in args.mode:
 
 	#Train the model
 	print("[+] Training the model...")
-	model.fit(train_X, train_y, n_epoch=nbEpoch, batch_size=batchSize, shuffle=True, validation_set=(validation_X, validation_y), snapshot_step=1, snapshot_epoch=True,  show_metric=True, run_id=run_id)
+	model.fit(train_X, train_y, n_epoch=nbEpoch, batch_size=batchSize, shuffle=True, validation_set=(validation_X, validation_y), snapshot_step=100, snapshot_epoch=True,  show_metric=True, run_id=run_id)
 	print("    Model trained! ✅")
 
 	#Save trained model
