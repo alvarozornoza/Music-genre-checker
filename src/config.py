@@ -41,4 +41,4 @@ testRatio = 0.1
 #Model parameters
 batchSize = 128
 learningRate = 0.001
-nbEpoch = 24
+nbEpoch = 14
