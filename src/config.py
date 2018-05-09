@@ -25,6 +25,7 @@ spectrogramsPath = 'data/Spectrograms/'
 slicesPath = 'data/Slices/'
 datasetPath = 'data/Dataset/'
 rawDataPath = 'data/Raw/'
+tmpPath = 'tmp/'
 
 #Spectrogram resolution
 pixelPerSecond = 50
