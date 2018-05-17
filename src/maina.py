@@ -27,7 +27,7 @@ import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument("mode", help="Trains or tests the CNN", nargs='+', choices=["train","test","slice","testSetOfSongs"])
-parser.add_argument("nbEpoch", help="Number of epochs",type=int)
+#parser.add_argument("nbEpoch", help="Number of epochs",type=int)
 args = parser.parse_args()
 
 print("--------------------------")
