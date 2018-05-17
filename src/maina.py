@@ -103,7 +103,7 @@ if "test" in args.mode:
 	for epoch in range(11,21):
 		print("[+] Loading weights...")
 		model_name = "musicDNN"+"_epoch_"+str(epoch)+".tflearn"
-		model.load(mode_name)
+		model.load(model_name)
 		print("    Weights loaded! ✅")
 
 		testAccuracy = model.evaluate(test_X, test_y)[0]
