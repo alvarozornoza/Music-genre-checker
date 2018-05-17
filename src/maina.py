@@ -100,9 +100,9 @@ if "test" in args.mode:
 	f_tests = open("musicDNN_testAccuracy.txt", 'w')
 
 	#Load weights
-	for epoch in range(10,21):
+	for epoch in range(11,21):
 		print("[+] Loading weights...")
-		model_name = "musicDNN"+"_epoch_"+epoch+".tflearn"
+		model_name = "musicDNN"+"_epoch_"+str(epoch)+".tflearn"
 		model.load(mode_name)
 		print("    Weights loaded! ✅")
 
