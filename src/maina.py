@@ -59,9 +59,8 @@ if "train" in args.mode:
 
 	#Define run id for graphs
 	#run_id = "MusicGenres - "+str(batchSize)+" "+''.join(random.SystemRandom().choice(string.ascii_uppercase) for _ in range(10))
-
-    f_scores = open("musicDNN_scores.txt", 'w')
-    for epoch in range(1,nbEpoch+1):
+	f_scores = open("musicDNN_scores.txt", 'w')
+	for epoch in range(1,nbEpoch+1):
 		#t0 = time.time()
 		print ("Number of epoch: " +str(epoch)+"/"+str(nbEpoch))
 		#sys.stdout.flush()
@@ -70,22 +69,20 @@ if "train" in args.mode:
 		#time_elapsed = time_elapsed + time.time() - t0
 		#print ("Time Elapsed: " +str(time_elapsed))
 		#sys.stdout.flush()
-
-        score_train = model.evaluate(train_X, train_Y)
-        print('Train Loss:', score_train[0])
-        print('Train Accuracy:', score_train[1])
-    
-	    score_test = model.evaluate(validation_X, validation_Y)
-        print('Test Loss:', score_test[0])
-        print('Test Accuracy:', score_test[1])
-        
-        f_scores.write(str(score_train[0])+","+str(score_train[1])+","+str(score_test[0])+","+str(score_test[1]) + "\n")
+		score_train = model.evaluate(train_X, train_Y)
+		print("train loss: ",score_train[0])
+		print("train acc: ",score_train[1])
+		score_validation = model.evaluate(validation_X, validation_Y)
+		print("validation loss: ",score_validation[0])
+		print("validation acc: ",score_validation[1])
+		f_scores.write(str(score_train[0])+","+str(score_train[1])+","+str(score_validation[0])+","+str(score_validation[1]) + "\n")
 
 		if epoch > 10:
 			model_name = "musicDNN"+"_epoch_"+str(epoch)+".tflearn"
 			model.save(model_name)
 			#model.save(weights_path + model_name + "_epoch_" + str(epoch))
 			print("Saved model to disk in: " + model_name)
+	f_scores.close()
 	
 	#Train the model
 	#print("[+] Training the model...")
@@ -102,22 +99,28 @@ if "test" in args.mode:
 	#Create or load new dataset
 	test_X, test_y = getDataset(filesPerGenre, genres, sliceSize, validationRatio, testRatio, mode="test")
 
+	f_tests = open("musicDNN_testAccuracy.txt", 'w')
+
 	#Load weights
-	print("[+] Loading weights...")
-	model_name = "musicDNN"+"_epoch_"+args.nbEpoch+".tflearn"
-	model.load(mode_name)
-	print("    Weights loaded! ✅")
+	for epoch in range(10,21):
+		print("[+] Loading weights...")
+		model_name = "musicDNN"+"_epoch_"+args.nbEpoch+".tflearn"
+		model.load(mode_name)
+		print("    Weights loaded! ✅")
 
-	testAccuracy = model.evaluate(test_X, test_y)[0]
-	print("[+] Test accuracy: {} ".format(testAccuracy))
+		testAccuracy = model.evaluate(test_X, test_y)
+		print("[+] Test accuracy: %d Loss: %d " %[testAccuracy[0],testAcuracy[1]])
+		f_tests.write(str(testAccuracy[0])+","+str(testAccuracy[1])+"\n")
+
+	f_tests.close()
 
 
-	evali= model.evaluate(test_X,test_y)[0]
-	print("Accuracy of the model is :", evali)
-	labels = model.predict_label(test_X)
-	print("The predicted labels are :",labels)
-	prediction = model.predict(test_X)
-	print("The predicted probabilities are :", prediction)
+	# evali= model.evaluate(test_X,test_y)[0]
+	# print("Accuracy of the model is :", evali)
+	# labels = model.predict_label(test_X)
+	# print("The predicted labels are :",labels)
+	# prediction = model.predict(test_X)
+	# print("The predicted probabilities are :", prediction)
 
 	# # Compute confusion matrix
 	# cnf_matrix = confusion_matrix(test_y, [item[0] for item in labels])
@@ -136,9 +139,7 @@ if "test" in args.mode:
 	# plt.show()
 
 if "testSetOfSongs" in args.mode:
-
-
-
+	print("Not yet")
 
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
