@@ -69,14 +69,11 @@ if "train" in args.mode:
 		#time_elapsed = time_elapsed + time.time() - t0
 		#print ("Time Elapsed: " +str(time_elapsed))
 		#sys.stdout.flush()
-		score_train = model.evaluate(train_X, train_y)
-		print(score_train)
+		score_train = model.evaluate(train_X, train_y)[0]
 		print("train acc: ",score_train[0])
-		print("train loss: ",score_train[1])
-		score_validation = model.evaluate(validation_X, validation_y)
+		score_validation = model.evaluate(validation_X, validation_y)[0]
 		print("validation acc: ",score_validation[0])
-		print("validation loss: ",score_validation[1])
-		f_scores.write(str(score_train[0])+","+str(score_train[1])+","+str(score_validation[0])+","+str(score_validation[1]) + "\n")
+		f_scores.write(str(score_train[0])+","+str(score_validation[0])+ "\n")
 
 		if epoch > 10:
 			model_name = "musicDNN"+"_epoch_"+str(epoch)+".tflearn"
@@ -110,8 +107,8 @@ if "test" in args.mode:
 		print("    Weights loaded! ✅")
 
 		testAccuracy = model.evaluate(test_X, test_y)
-		print("[+] Test accuracy: %d Loss: %d " %[testAccuracy[0],testAcuracy[1]])
-		f_tests.write(str(testAccuracy[0])+","+str(testAccuracy[1])+"\n")
+		print("[+] Test accuracy: {}".format(testAccuracy[0]))
+		f_tests.write(str(testAccuracy)+"\n")
 
 	f_tests.close()
 
