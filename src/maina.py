@@ -22,8 +22,12 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 
 import argparse
+
+import time
+
 parser = argparse.ArgumentParser()
-parser.add_argument("mode", help="Trains or tests the CNN", nargs='+', choices=["train","test","slice"])
+parser.add_argument("mode", help="Trains or tests the CNN", nargs='+', choices=["train","test","slice","testSetOfSongs"])
+parser.add_argument("nbEpoch", help="Number of epochs",type=int)
 args = parser.parse_args()
 
 print("--------------------------")
@@ -48,26 +52,51 @@ nbClasses = len(genres)
 #Create model 
 model = createModel(nbClasses, sliceSize)
 
-
-
 if "train" in args.mode:
 
 	#Create or load new dataset
 	train_X, train_y, validation_X, validation_y = getDataset(filesPerGenre, genres, sliceSize, validationRatio, testRatio, mode="train")
 
 	#Define run id for graphs
-	run_id = "MusicGenres - "+str(batchSize)+" "+''.join(random.SystemRandom().choice(string.ascii_uppercase) for _ in range(10))
+	#run_id = "MusicGenres - "+str(batchSize)+" "+''.join(random.SystemRandom().choice(string.ascii_uppercase) for _ in range(10))
 
+    f_scores = open("musicDNN_scores.txt", 'w')
+    for epoch in range(1,nbEpoch+1):
+		#t0 = time.time()
+		print ("Number of epoch: " +str(epoch)+"/"+str(nbEpoch))
+		#sys.stdout.flush()
+		#scores =
+		model.fit(train_X, train_y, batch_size=batchSize, n_epoch=1, validation_set=(validation_X, validation_y))
+		#time_elapsed = time_elapsed + time.time() - t0
+		#print ("Time Elapsed: " +str(time_elapsed))
+		#sys.stdout.flush()
+
+        score_train = model.evaluate(train_X, train_Y)
+        print('Train Loss:', score_train[0])
+        print('Train Accuracy:', score_train[1])
+    
+	    score_test = model.evaluate(validation_X, validation_Y)
+        print('Test Loss:', score_test[0])
+        print('Test Accuracy:', score_test[1])
+        
+        f_scores.write(str(score_train[0])+","+str(score_train[1])+","+str(score_test[0])+","+str(score_test[1]) + "\n")
+
+		if epoch > 10:
+			model_name = "musicDNN"+"_epoch_"+str(epoch)+".tflearn"
+			model.save(model_name)
+			#model.save(weights_path + model_name + "_epoch_" + str(epoch))
+			print("Saved model to disk in: " + model_name)
+	
 	#Train the model
-	print("[+] Training the model...")
-	model.fit(train_X, train_y, n_epoch=nbEpoch, batch_size=batchSize, shuffle=True, validation_set=(validation_X, validation_y), snapshot_step=100, snapshot_epoch=True,  show_metric=True, run_id=run_id)
+	#print("[+] Training the model...")
+	#model.fit(train_X, train_y, n_epoch=nbEpoch, batch_size=batchSize, shuffle=True, validation_set=(validation_X, validation_y), snapshot_step=100, snapshot_epoch=True,  show_metric=True, run_id=run_id)
 	print("    Model trained! ✅")
 
 	#Save trained model
-	print("[+] Saving the weights...")
-	model.save('musicDNN.tflearn')
-	print("[+] Weights saved! ✅💾")
-
+	#print("[+] Saving the weights...")
+	#model.save('musicDNN.tflearn')
+	#print("[+] Weights saved! ✅💾")
+	
 if "test" in args.mode:
 
 	#Create or load new dataset
@@ -75,7 +104,8 @@ if "test" in args.mode:
 
 	#Load weights
 	print("[+] Loading weights...")
-	model.load('musicDNN.tflearn')
+	model_name = "musicDNN"+"_epoch_"+args.nbEpoch+".tflearn"
+	model.load(mode_name)
 	print("    Weights loaded! ✅")
 
 	testAccuracy = model.evaluate(test_X, test_y)[0]
@@ -89,21 +119,25 @@ if "test" in args.mode:
 	prediction = model.predict(test_X)
 	print("The predicted probabilities are :", prediction)
 
-	# Compute confusion matrix
-	cnf_matrix = confusion_matrix(test_y, [item[0] for item in labels])
-	np.set_printoptions(precision=2)
+	# # Compute confusion matrix
+	# cnf_matrix = confusion_matrix(test_y, [item[0] for item in labels])
+	# np.set_printoptions(precision=2)
 
-	# Plot non-normalized confusion matrix
-	plt.figure()
-	plot_confusion_matrix(cnf_matrix, classes=class_names,
-						title='Confusion matrix, without normalization')
+	# # Plot non-normalized confusion matrix
+	# plt.figure()
+	# plot_confusion_matrix(cnf_matrix, classes=class_names,
+	# 					title='Confusion matrix, without normalization')
 
-	# Plot normalized confusion matrix
-	plt.figure()
-	plot_confusion_matrix(cnf_matrix, classes=class_names, normalize=True,
-						title='Normalized confusion matrix')
+	# # Plot normalized confusion matrix
+	# plt.figure()
+	# plot_confusion_matrix(cnf_matrix, classes=class_names, normalize=True,
+	# 					title='Normalized confusion matrix')
 
-	plt.show()
+	# plt.show()
+
+if "testSetOfSongs" in args.mode:
+
+
 
 
 def plot_confusion_matrix(cm, classes,
@@ -139,5 +173,4 @@ def plot_confusion_matrix(cm, classes,
     plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
-
 

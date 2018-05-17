@@ -40,6 +40,8 @@ def createModel(nbClasses,imageSize):
 	convnet = fully_connected(convnet, nbClasses, activation='softmax')
 	convnet = regression(convnet, optimizer='rmsprop', loss='categorical_crossentropy')
 
-	model = tflearn.DNN(convnet,checkpoint_path=tmpPath+'tflearn_logs/',max_checkpoints=1, tensorboard_verbose=0)
+	#model = tflearn.DNN(convnet,checkpoint_path=tmpPath+'tflearn_logs/',max_checkpoints=1, tensorboard_verbose=0)
+	model = tflearn.DNN(convnet,checkpoint_path=tmpPath+'tflearn_logs/',best_checkpoint_path=tmpPath+'tflearn_logs2/', tensorboard_verbose=0)
+
 	print("    Model created! ✅")
 	return model
