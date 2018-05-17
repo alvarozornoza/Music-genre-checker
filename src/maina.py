@@ -70,11 +70,12 @@ if "train" in args.mode:
 		#print ("Time Elapsed: " +str(time_elapsed))
 		#sys.stdout.flush()
 		score_train = model.evaluate(train_X, train_y)
-		print("train loss: ",score_train[0])
-		print("train acc: ",score_train[1])
+		print(score_train)
+		print("train acc: ",score_train[0])
+		print("train loss: ",score_train[1])
 		score_validation = model.evaluate(validation_X, validation_y)
-		print("validation loss: ",score_validation[0])
-		print("validation acc: ",score_validation[1])
+		print("validation acc: ",score_validation[0])
+		print("validation loss: ",score_validation[1])
 		f_scores.write(str(score_train[0])+","+str(score_train[1])+","+str(score_validation[0])+","+str(score_validation[1]) + "\n")
 
 		if epoch > 10:
