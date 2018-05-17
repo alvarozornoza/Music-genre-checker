@@ -73,7 +73,7 @@ if "train" in args.mode:
 		print("train acc: ",score_train)
 		score_validation = model.evaluate(validation_X, validation_y)[0]
 		print("validation acc: ",score_validation)
-		f_scores.write(str(score_train[0])+","+str(score_validation[0])+ "\n")
+		f_scores.write(str(score_train)+","+str(score_validation)+ "\n")
 
 		if epoch > 10:
 			model_name = "musicDNN"+"_epoch_"+str(epoch)+".tflearn"
@@ -106,8 +106,8 @@ if "test" in args.mode:
 		model.load(mode_name)
 		print("    Weights loaded! ✅")
 
-		testAccuracy = model.evaluate(test_X, test_y)
-		print("[+] Test accuracy: {}".format(testAccuracy[0]))
+		testAccuracy = model.evaluate(test_X, test_y)[0]
+		print("[+] Test accuracy: {}".format(testAccuracy))
 		f_tests.write(str(testAccuracy)+"\n")
 
 	f_tests.close()
