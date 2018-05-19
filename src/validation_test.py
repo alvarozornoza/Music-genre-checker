@@ -112,7 +112,7 @@ if __name__ == '__main__':
 	print("    Weights loaded! ✅")
 
 	# load dataset
-	x,y,z = loadDataset(1100, genres, sliceSize, "validate"):
+	x,y,z = loadDataset(1100, genres, sliceSize, "validate")
 	# saveDataset(x,y,z,1100,genres,sliceSize)
 	y = np.argmax(y,1)
 	print("[+] Predicting on validation...")
@@ -141,6 +141,3 @@ if __name__ == '__main__':
 	print("| AVERAGE ratio: {}".format(float(av)/total))
 	print("| MAX ratio: {}".format(float(mx)/total))
 	print("--------------------------")
-
-
-
