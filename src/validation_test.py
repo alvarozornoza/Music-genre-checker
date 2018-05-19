@@ -126,6 +126,7 @@ if __name__ == '__main__':
 	freq = 0
 	av = 0
 	mx = 0 #max winer
+	total = 0
 	for song in bySongProb.keys():
 		if labels[song] == getFreqWinner(bySongProb[song]):
 			freq += 1
@@ -133,3 +134,13 @@ if __name__ == '__main__':
 			av += 1
 		if labels[song] == getAbsoluteMax(bySongProb[song]):
 			mx += 1
+		total += 1
+	print("--------------------------")
+	print("| ** RESULT OVER ALL ** ")
+	print("| FREQ ratio: {}".format(float(freq)/total))
+	print("| AVERAGE ratio: {}".format(float(av)/total))
+	print("| MAX ratio: {}".format(float(mx)/total))
+	print("--------------------------")
+
+
+
