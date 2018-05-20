@@ -102,9 +102,7 @@ def saveDataset(X, y, z, nbPerGenre, genres, sliceSize):
 
 if __name__ == '__main__':
 	genres = ['country', 'disco', 'reggae', 'rock', 'pop', 'classical', 'blues', 'hiphop', 'metal', 'jazz']
-
 	nbClasses = len(genres)
-
 	#Load model and weights
 	model = createModel(nbClasses, sliceSize)
 	print("[+] Loading weightts...")
@@ -116,13 +114,31 @@ if __name__ == '__main__':
 	# saveDataset(x,y,z,1100,genres,sliceSize)
 	y = np.argmax(y,1)
 	print("[+] Predicting on validation...")
-	pred = model.predict(x)
-	bySongProb = {}
+	pred = []
+    bulk_size=20
+    for i in xrange(0,len(x),bulk_size):
+        if len(pred) == 0:
+            pred = list(model.predict(x[0:int(i+bulk_size)]))
+        else:
+            pred = pred +list(model.predict(x[int(i):int(i+bulk_size)]))
+    if len(pred) == len(x):
+        print("[+] Predicting lengths matched")
+    else:
+        print("[+] Predicting lengths do not match..")
+        pred = np.concatenate(pred , model.predict(x[len(pred):]))
+    if len(pred) == len(x):
+        print("[+] Predicting lengths matched")
+    else:
+        print("[+] Predicting lengths do not match..")
+    pred = np.array(pred)
+    bySongProb = {}
 	labels = {}
 	for ind,p in enumerate(pred):
-		bySongProb[z[ind]].append(p)
-		labels[z[ind]] = y[ind]
-	del pred,x,y,z
+        if z[ind] not in bySongProb:
+            bySongProb[z[ind]]=[]
+    	bySongProb[z[ind]].append(p)
+    	labels[z[ind]] = y[ind]
+
 	freq = 0
 	av = 0
 	mx = 0 #max winer
