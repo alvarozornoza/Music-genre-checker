@@ -28,7 +28,7 @@ def getDatasetFromAudioFile(filename):
 
 
 def sliceSpectrogram(filename, desiredSize):
-    # Load the full spectrogram
+# Load the full spectrogram
     img = Image.open(spectrogramsPath+filename+'.png')
 
     #Compute approximate number of 128x128 samples
@@ -40,31 +40,28 @@ def sliceSpectrogram(filename, desiredSize):
     filePaths = []
     #For each sample
     for i in range(nbSamples):
-        print ("Creating slice: ", (i+1), "/", nbSamples, "for", filename)
-        startPixel = i*desiredSize
-        imgTmp = img.crop((startPixel, 1, startPixel + desiredSize, desiredSize + 1))
+    	print ("Creating slice: ", (i+1), "/", nbSamples, "for", filename)
+    	#Extract and save 128x128 sample
+    	startPixel = i*desiredSize
+    	imgTmp = img.crop((startPixel, 1, startPixel + desiredSize, desiredSize + 1))
         sliceName =slicesPath+filename+"_"+str(i)+".png"
-        print("\N",sliceName)
+        print("\n",sliceName)
         imgTmp.save(sliceName)
-    filePaths.append(sliceName)
+        filePaths.append(sliceName)
     return filePaths
 
 def getAbsoluteMax(probabilities):
     ''' From the matrix it gets the maximum probabilities'''
-    index= np.argmax(probabilities)
-    return index%CLASSES
+    winners_perclass = np.max(probabilities,0)
+    return np.argmax(winners_perclass)
 
 def getAverageWinner(probabilities):
     return np.argmax(probabilities.mean(0))
 
 def getFreqWinner(probabilities):
-    return np.argmax(getFrequencies(probabilities))
+    winners = np.argmax(probabilities,1)
+    return Counter(winners).most_common(1)[0][0]
 
-def getFrequencies(probabilities):
-    winer = np.zeros(len(probabilities))
-    for index, item in enumerate(probabilities):
-        winer[index] = np.argmax(item)
-    return Counter(winer)
 
 def getAverage(probabilities):
     return probabilities.mean(0)
