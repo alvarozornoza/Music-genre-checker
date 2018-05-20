@@ -101,20 +101,20 @@ def saveDataset(X, y, z, nbPerGenre, genres, sliceSize):
 
 
 if __name__ == '__main__':
-	genres = ['country', 'disco', 'reggae', 'rock', 'pop', 'classical', 'blues', 'hiphop', 'metal', 'jazz']
-	nbClasses = len(genres)
-	#Load model and weights
-	model = createModel(nbClasses, sliceSize)
-	print("[+] Loading weightts...")
-	model.load('musicDNN.tflearn')
-	print("    Weights loaded! ✅")
+    genres = ['country', 'disco', 'reggae', 'rock', 'pop', 'classical', 'blues', 'hiphop', 'metal', 'jazz']
+    nbClasses = len(genres)
+    #Load model and weights
+    model = createModel(nbClasses, sliceSize)
+    print("[+] Loading weightts...")
+    model.load('musicDNN.tflearn')
+    print("    Weights loaded! ✅")
 
-	# load dataset
-	x,y,z = loadDataset(1100, genres, sliceSize, "validate")
-	# saveDataset(x,y,z,1100,genres,sliceSize)
-	y = np.argmax(y,1)
-	print("[+] Predicting on validation...")
-	pred = []
+    # load dataset
+    x,y,z = loadDataset(1100, genres, sliceSize, "validate")
+    # saveDataset(x,y,z,1100,genres,sliceSize)
+    y = np.argmax(y,1)
+    print("[+] Predicting on validation...")
+    pred = []
     bulk_size=20
     for i in xrange(0,len(x),bulk_size):
         if len(pred) == 0:
@@ -132,28 +132,28 @@ if __name__ == '__main__':
         print("[+] Predicting lengths do not match..")
     pred = np.array(pred)
     bySongProb = {}
-	labels = {}
-	for ind,p in enumerate(pred):
+    labels = {}
+    for ind,p in enumerate(pred):
         if z[ind] not in bySongProb:
             bySongProb[z[ind]]=[]
     	bySongProb[z[ind]].append(p)
     	labels[z[ind]] = y[ind]
 
-	freq = 0
-	av = 0
-	mx = 0 #max winer
-	total = 0
-	for song in bySongProb.keys():
-		if labels[song] == getFreqWinner(bySongProb[song]):
-			freq += 1
-		if labels[song] == getAverage(bySongProb[song]):
-			av += 1
-		if labels[song] == getAbsoluteMax(bySongProb[song]):
-			mx += 1
-		total += 1
-	print("--------------------------")
-	print("| ** RESULT OVER ALL ** ")
-	print("| FREQ ratio: {}".format(float(freq)/total))
-	print("| AVERAGE ratio: {}".format(float(av)/total))
-	print("| MAX ratio: {}".format(float(mx)/total))
-	print("--------------------------")
+    freq = 0
+    av = 0
+    mx = 0 #max winer
+    total = 0
+    for song in bySongProb.keys():
+    	if labels[song] == getFreqWinner(np.array(bySongProb[song])):
+    		freq += 1
+    	if labels[song] == getAverageWinner(np.array(bySongProb[song])):
+    		av += 1
+    	if labels[song] == getAbsoluteMax(np.array(bySongProb[song])):
+    		mx += 1
+    	total += 1
+    print("--------------------------")
+    print("| ** RESULT OVER ALL ** ")
+    print("| FREQ ratio: {}".format(float(freq)/total))
+    print("| AVERAGE ratio: {}".format(float(av)/total))
+    print("| MAX ratio: {}".format(float(mx)/total))
+    print("--------------------------")
