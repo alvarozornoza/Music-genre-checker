@@ -39,17 +39,17 @@ def loadDataset(nbPerGenre, genres, sliceSize, mode):
     datasetName = getDatasetName(nbPerGenre, sliceSize)
     if mode == "train":
         print("[+] Loading training and validation datasets... ")
-        train_X = pickle.load(open("{}train_X_{}.p".format(datasetPath,datasetName), "rb" ))
-        train_y = pickle.load(open("{}train_y_{}.p".format(datasetPath,datasetName), "rb" ))
-        validation_X = pickle.load(open("{}validation_X_{}.p".format(datasetPath,datasetName), "rb" ))
-        validation_y = pickle.load(open("{}validation_y_{}.p".format(datasetPath,datasetName), "rb" ))
+        train_X = pickle.load(open("{}train_X_{}.p".format(datasetPath,datasetName), "rb" ),encoding='bytes')
+        train_y = pickle.load(open("{}train_y_{}.p".format(datasetPath,datasetName), "rb" ),encoding='bytes')
+        validation_X = pickle.load(open("{}validation_X_{}.p".format(datasetPath,datasetName), "rb" ),encoding='bytes')
+        validation_y = pickle.load(open("{}validation_y_{}.p".format(datasetPath,datasetName), "rb" ),encoding='bytes')
         print("    Training and validation datasets loaded! ✅")
         return train_X, train_y, validation_X, validation_y
 
     else:
         print("[+] Loading testing dataset... ")
-        test_X = pickle.load(open("{}test_X_{}.p".format(datasetPath,datasetName), "rb" ))
-        test_y = pickle.load(open("{}test_y_{}.p".format(datasetPath,datasetName), "rb" ))
+        test_X = pickle.load(open("{}test_X_{}.p".format(datasetPath,datasetName), "rb" ),encoding='bytes')
+        test_y = pickle.load(open("{}test_y_{}.p".format(datasetPath,datasetName), "rb" ),encoding='bytes')
         print("    Testing dataset loaded! ✅")
         return test_X, test_y
 
