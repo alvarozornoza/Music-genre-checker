@@ -13,6 +13,7 @@ import numpy as np
 
 from model import createModel
 from imageFilesTools import getImageData
+from datasetTools import saveDataset
 from config import slicesPath,datasetPath,batchSize,filesPerGenre
 from config import nbEpoch,validationRatio, testRatio
 from config import sliceSize
@@ -54,33 +55,67 @@ def loadDataset(nbPerGenre, genres, sliceSize, mode):
         val_z = pickle.load(open("{}val_z_{}.p".format(datasetPath,datasetName), "rb" ))
         print("    Training and validation datasets loaded! ✅")
         return val_X,val_y,val_z
-
+def createDatasetAndSave():
+    genres = ['country', 'disco', 'reggae', 'rock', 'pop', 'classical', 'blues', 'hiphop', 'metal', 'jazz']
+    createDatasetFromSlices(1100,genres,128,.2,.2)
 #Creates and save dataset from slices
 def createDatasetFromSlices(nbPerGenre, genres, sliceSize, validationRatio, testRatio):
-	'''     return train_X, train_y, train_z, validation_X, validation_y,
-					validation_z, test_X, test_y,test_z'''
-	data = []
-	for genre in genres:
-		print("-> Adding {}...".format(genre))
-		#Get slices in genre subfolder
-		filenames = os.listdir(slicesPath+genre)
-		filenames = [filename for filename in filenames if filename.endswith('.png')]
-		filenames = filenames[:nbPerGenre]
-		#Add data (X,y)
-		for filename in filenames:
-			imgData = getImageData(slicesPath+genre+"/"+filename, sliceSize)
-			label = [1. if genre == g else 0. for g in genres]
-			s_lab = filename[:filename.rfind("_")]
-			data.append((imgData,label,s_lab))
+    '''     return train_X, train_y, train_z, validation_X, validation_y,
+    				validation_z, test_X, test_y,test_z'''
+    data = []
+    tx = []
+    ty = []
+    vx = []
+    vy = []
+    tsx = []
+    tsy = []
+    tsz = []
+
+    for genre in genres:
+        print("-> Adding {}...".format(genre))
+        #Get slices in genre subfolder
+        filenames = os.listdir(slicesPath+genre)
+        filenames = [filename for filename in filenames if filename.endswith('.png')]
+        filenames = filenames[:nbPerGenre]
+        shuffle(filenames)
+        #Add data (X,y)
+        q = []
+        for filename in filenames:
+            imgData = getImageData(slicesPath+genre+"/"+filename, sliceSize)
+            label = [1. if genre == g else 0. for g in genres]
+            s_lab = filename[:filename.rfind("_")]
+            #data.append((imgData,label,s_lab))
+            q.append((imgData,label,s_lab))
+        validationNb = int(len(filenames)*validationRatio)
+        testNb = int(len(filenames)*testRatio)
+        trainNb = len(filenames)-(validationNb + testNb)
+        X,y,z = zip(*q)
+        tx.append(X[:trainNb])
+        ty.append(y[:trainNb])
+        vx.append(X[:trainNb:trainNb+validationNb])
+        vy.append(y[:trainNb:trainNb+validationNb])
+        tsx.append(X[-testNb:])
+        tsy.append(y[-testNb:])
+        tsz.append(z[-testNb:])
 
 	#Extract X and y
-	X,y,z = zip(*data)
-	print("    Dataset created! ✅")
-	return X,y,z
+	#X,y,z = zip(*data)
+    train_X = np.array(tx).reshape([-1, sliceSize, sliceSize, 1])
+    train_y = np.array(ty)
+    validation_X = np.array(vx).reshape([-1, sliceSize, sliceSize, 1])
+    validation_y = np.array(vy)
+    test_X = np.array(tsx).reshape([-1, sliceSize, sliceSize, 1])
+    test_y = np.array(tsy)
+    test_z = np.array(tsz)
+    print("    Dataset created! ✅")
+    saveDataset(train_X, train_y, validation_X, validation_y, test_X, test_y, nbPerGenre, genres, sliceSize)
+    sssaveDataset(test_X,test_y,test_z)
+    return train_X, train_y, validation_X, validation_y, test_X, test_y
+
 
 
 #Saves dataset
-def saveDataset(X, y, z, nbPerGenre, genres, sliceSize):
+def sssaveDataset(X, y, z, nbPerGenre, genres, sliceSize):
      #Create path for dataset if not existing
     if not os.path.exists(os.path.dirname(datasetPath)):
         try:
